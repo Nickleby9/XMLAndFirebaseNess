@@ -1,14 +1,17 @@
 package ness.edu.xmlandfirebase;
 
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
@@ -18,6 +21,7 @@ import android.widget.Toast;
 public class YnetDetailFragment extends Fragment {
 
     WebView webView;
+    ProgressBar progressBar;
 
     public static YnetDetailFragment newInstance(String url) {
         Bundle args = new Bundle();
@@ -36,13 +40,15 @@ public class YnetDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_ynet_detail, container, false);
+        final View v = inflater.inflate(R.layout.fragment_ynet_detail, container, false);
         webView = (WebView) v.findViewById(R.id.webView);
+        progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
 
         final String url = getArguments().getString("url");
         webView.loadUrl(url);
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.setWebViewClient(new WebViewClient(){
+
+        webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 webView.loadUrl(request.getUrl().toString());
@@ -54,7 +60,22 @@ public class YnetDetailFragment extends Fragment {
                 webView.loadUrl(url);
                 return true;
             }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                Log.d("Ness", url);
+                progressBar.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+                progressBar.setVisibility(view.VISIBLE);
+            }
         });
+
+
 
         return v;
     }

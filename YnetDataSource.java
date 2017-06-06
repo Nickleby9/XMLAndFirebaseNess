@@ -73,7 +73,6 @@ public class YnetDataSource {
             //document.select("img[href~")
             Ynet ynet = new Ynet(title, href, description, src);
             data.add(ynet);
-            Log.d("Ness", ynet.toString());
         }
 
         return data;
